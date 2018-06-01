@@ -39,6 +39,17 @@
                                         <td><input type="text" class="form-control" name="name" value="<?php echo $clientFormData['name']; ?>" data-validation="not-empty" /></td>
                                     </tr>
                                     <tr>
+                                        <th>Status</th>
+                                        <td>
+                                            <select name="status" id="status" data-validation="not-empty" class="form-control">
+                                                <option value=""></option>
+                                                <?php foreach ($status as $st): ?>
+                                                    <?php echo "<option".(($st == $clientFormData["status"])?" selected":"").">". ucfirst($st) ."</option>"; ?>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Sign On Date</th>
                                         <td><input type="text" class="form-control datepicker-here" name="sign_on_date" value="<?php echo !empty($clientFormData['sign_on_date']) ? Util::convertDate($clientFormData['sign_on_date'], 'Y-m-d', 'm/d/Y') : ''; ?>" /></td>
                                     </tr>

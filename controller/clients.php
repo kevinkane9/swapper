@@ -675,6 +675,7 @@ if (Route::uriParam('action')) {
                     'gmailAccounts'       => $gmailAccounts,
                     'users'               => $users,
                     'companies'           => $companies,
+                    'status'              => array('active','paused','archived') // TODO: clean up, make a constant array.
                 ]
             );
             break;        
