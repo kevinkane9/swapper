@@ -1,0 +1,9 @@
+/************CUSTOM STYLES********************************/
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0 !important;
+}
+
+.dataTables_paginate> .pagination>li>a, .pagination>li>span {
+    padding: 3px 6px !important;
+}
+/************CUSTOM STYLES********************************/

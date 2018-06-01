@@ -1,0 +1,21 @@
+<?php
+
+
+use Phinx\Migration\AbstractMigration;
+
+class IncreaseProspectEmailLength extends AbstractMigration
+{
+    public function up()
+    {
+        $this->query(
+            "ALTER TABLE `sap_prospect` CHANGE `email` `email` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL"
+        );
+    }
+
+    public function down()
+    {
+        $this->query(
+            "ALTER TABLE `sap_prospect` CHANGE `email` `email` VARCHAR(80) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL"
+        );
+    }
+}
