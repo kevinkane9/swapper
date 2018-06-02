@@ -16,13 +16,22 @@
                     <div class="text-center">
                         <div class="table-responsive">
                             <div class="row controls">
-                                <div class="col-sm-2">  
+                                <div class="col-sm-2">
                                     <label>Meetings Year: </label>
                                 </div>
-                                <div class="col-sm-3">  
+                                <div class="col-sm-3">
                                     <select class="form-control" id="meeting-year-select" name="meeting_year">
                                         <?php foreach ($meeting_years as $meeting_year) { ?>
                                             <option value="<?php echo $meeting_year; ?>" <?php echo $meeting_year_select == $meeting_year? 'selected' : '' ?>><?php echo $meeting_year; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-2 col-sm-offset-3"><label>Status</label></div>
+                                <div class="col-sm-2">
+                                    <select class="form-control" id="status-select" name="status">
+                                        <?php foreach ($status as $st) { ?>
+                                            <option value="<?php echo $st; ?>" <?php echo $meeting_year_select == $st? 'selected' : '' ?>><?php echo ($st); ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
@@ -33,7 +42,7 @@
                                     <tr>
                                       <td class="tg-yw4l" style="text-align:center">Client Name</td>
                                       <td class="tg-yw4l" style="text-align:center">Inbox</td>
-                                      <td class="tg-yw4l">Total Meetings</td>                                      
+                                      <td class="tg-yw4l">Total Meetings</td>
                                       <td class="tg-yw4l">January<br>
                                       <a href="/meeting-scoreboard/meetings-calendar-sapper?month=1&year=<?php echo $meeting_year_select; ?>" target="blank">Sapper</a><br><a href="/meeting-scoreboard/meetings-calendar?month=1&year=<?php echo $meeting_year_select; ?>" target="blank">Client</a>
                                       </td>
@@ -79,11 +88,11 @@
                                             $i=0;
                                             foreach ($synced_account as $account_id=>$synced_acc) {
                                                 $synced_account_client = $synced_acc['client'];
-                                                
+
                                                 unset($synced_account[$account_id]['client']);
                                                 unset($synced_account[$account_id]['client_id']);
                                                 unset($synced_account[$account_id]['account_id']);
-                                                unset($synced_account[$account_id]['gmail_status']);   
+                                                unset($synced_account[$account_id]['gmail_status']);
 
                                                 if ($i > 0) {
                                                     $synced_account_inbox .= '<br>';
@@ -96,131 +105,131 @@
                                             <td><?php echo $synced_account_client; ?></td>
                                             <td><?php echo $synced_account_inbox; ?></td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
                                                     unset($accounts[$client_id]['client'],$accounts[$client_id]['client_id'],$accounts[$client_id]['inbox'],$accounts[$client_id]['meetings_av'],$accounts[$client_id]['meeting_year']);
                                                     unset($meeting_per_months[$client_id]['client_id'], $meeting_per_months[$client_id]['year']);
-                                                    
+
                                                     if (!empty($accounts[$client_id])) {
-                                                        $mc += !empty(array_sum($accounts[$client_id])) ? array_sum($accounts[$client_id]) : 0; 
+                                                        $mc += !empty(array_sum($accounts[$client_id])) ? array_sum($accounts[$client_id]) : 0;
                                                     } else {
                                                         $mc += 0;
                                                     }
-                                                    
+
                                                     if (!empty($meeting_per_months[$client_id])) {
-                                                        $mc += !empty(array_sum($meeting_per_months[$client_id])) ? array_sum($meeting_per_months[$client_id]) : 0; 
+                                                        $mc += !empty(array_sum($meeting_per_months[$client_id])) ? array_sum($meeting_per_months[$client_id]) : 0;
                                                     } else {
                                                         $mc += 0;
                                                     }
-                                                    
-                                                    echo !empty($mc) ? $mc : '-' ;
-                                                ?>
-                                            </td>                                            
-                                            <td>
-                                                <?php 
-                                                    $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_jan']) ? $accounts[$client_id]['meeting_count_jan'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_jan']) ? $meeting_per_months[$client_id]['meetings_jan'] : 0; 
-                                                    
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_feb']) ? $accounts[$client_id]['meeting_count_feb'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_feb']) ? $meeting_per_months[$client_id]['meetings_feb'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_jan']) ? $accounts[$client_id]['meeting_count_jan'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_jan']) ? $meeting_per_months[$client_id]['meetings_jan'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_mar']) ? $accounts[$client_id]['meeting_count_mar'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_mar']) ? $meeting_per_months[$client_id]['meetings_mar'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_feb']) ? $accounts[$client_id]['meeting_count_feb'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_feb']) ? $meeting_per_months[$client_id]['meetings_feb'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_apr']) ? $accounts[$client_id]['meeting_count_apr'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_apr']) ? $meeting_per_months[$client_id]['meetings_apr'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_mar']) ? $accounts[$client_id]['meeting_count_mar'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_mar']) ? $meeting_per_months[$client_id]['meetings_mar'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_may']) ? $accounts[$client_id]['meeting_count_may'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_may']) ? $meeting_per_months[$client_id]['meetings_may'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_apr']) ? $accounts[$client_id]['meeting_count_apr'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_apr']) ? $meeting_per_months[$client_id]['meetings_apr'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_jun']) ? $accounts[$client_id]['meeting_count_jun'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_jun']) ? $meeting_per_months[$client_id]['meetings_jun'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_may']) ? $accounts[$client_id]['meeting_count_may'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_may']) ? $meeting_per_months[$client_id]['meetings_may'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_jul']) ? $accounts[$client_id]['meeting_count_jul'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_jul']) ? $meeting_per_months[$client_id]['meetings_jul'] : 0; 
-                                                   
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_jun']) ? $accounts[$client_id]['meeting_count_jun'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_jun']) ? $meeting_per_months[$client_id]['meetings_jun'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_aug']) ? $accounts[$client_id]['meeting_count_aug'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_aug']) ? $meeting_per_months[$client_id]['meetings_aug'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_jul']) ? $accounts[$client_id]['meeting_count_jul'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_jul']) ? $meeting_per_months[$client_id]['meetings_jul'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_sep']) ? $accounts[$client_id]['meeting_count_sep'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_sep']) ? $meeting_per_months[$client_id]['meetings_sep'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_aug']) ? $accounts[$client_id]['meeting_count_aug'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_aug']) ? $meeting_per_months[$client_id]['meetings_aug'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_oct']) ? $accounts[$client_id]['meeting_count_oct'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_oct']) ? $meeting_per_months[$client_id]['meetings_oct'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_sep']) ? $accounts[$client_id]['meeting_count_sep'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_sep']) ? $meeting_per_months[$client_id]['meetings_sep'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_nov']) ? $accounts[$client_id]['meeting_count_nov'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_nov']) ? $meeting_per_months[$client_id]['meetings_nov'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_oct']) ? $accounts[$client_id]['meeting_count_oct'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_oct']) ? $meeting_per_months[$client_id]['meetings_oct'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
+                                                <?php
                                                     $mc = 0;
-                                                    $mc += !empty($accounts[$client_id]['meeting_count_dec']) ? $accounts[$client_id]['meeting_count_dec'] : 0; 
-                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_dec']) ? $meeting_per_months[$client_id]['meetings_dec'] : 0; 
-                                                    
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_nov']) ? $accounts[$client_id]['meeting_count_nov'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_nov']) ? $meeting_per_months[$client_id]['meetings_nov'] : 0;
+
+                                                    echo !empty($mc) ? $mc : '-' ;
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                    $mc = 0;
+                                                    $mc += !empty($accounts[$client_id]['meeting_count_dec']) ? $accounts[$client_id]['meeting_count_dec'] : 0;
+                                                    $mc += !empty($meeting_per_months[$client_id]['meetings_dec']) ? $meeting_per_months[$client_id]['meetings_dec'] : 0;
+
                                                     echo !empty($mc) ? $mc : '-' ;
                                                 ?>
                                             </td>

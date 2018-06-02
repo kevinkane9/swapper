@@ -42,9 +42,8 @@
                                         <th>Status</th>
                                         <td>
                                             <select name="status" id="status" data-validation="not-empty" class="form-control">
-                                                <option value=""></option>
                                                 <?php foreach ($status as $st): ?>
-                                                    <?php echo "<option".(($st == $clientFormData["status"])?" selected":"").">". ucfirst($st) ."</option>"; ?>
+                                                    <?php echo "<option value='".$st."' ".(($st == $clientFormData["status"])?" selected":"").">". ucfirst($st) ."</option>"; ?>
                                                 <?php endforeach; ?>
                                             </select>
                                         </td>

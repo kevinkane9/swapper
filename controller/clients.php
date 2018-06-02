@@ -83,6 +83,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
 
                 $data = [
                     'name'            => $_POST['name'],
+                    'status'          => $_POST['status'],
                     'user_id'         => $_POST['user_id'],
                     'sign_on_date'    => empty($_POST['sign_on_date']) ? null : Util::convertDate($_POST['sign_on_date']),
                     'launch_date'     => empty($_POST['launch_date']) ? null : Util::convertDate($_POST['launch_date']),
