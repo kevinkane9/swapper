@@ -27,12 +27,12 @@
                                     </select>
                                 </div>
 
-                                <div class="col-sm-2 col-sm-offset-3"><label>Status</label></div>
-                                <div class="col-sm-2">
-                                    <select class="form-control" id="status-select" name="status">
-                                        <?php foreach ($status as $st) { ?>
-                                            <option value="<?php echo $st; ?>" <?php echo $meeting_year_select == $st? 'selected' : '' ?>><?php echo ($st); ?></option>
-                                        <?php } ?>
+                                <div class="col-sm-2 col-sm-offset-2"><label>Status</label></div>
+                                <div class="col-sm-3">
+                                    <select class="selectpicker" id="status-select" name="client_status" multiple>
+                                    <?php foreach ($status as $st): ?>
+                                        <?php echo "<option value='".$st."' ".(($st == $client_status)?" selected":"").">". ucfirst($st) ."</option>"; ?>
+                                    <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>
@@ -245,3 +245,5 @@
     </div><!-- /.row -->
 
 </div><!--/.main-->
+
+<script type="text/javascript">var client_status = '<?php echo $client_status;?>'</script>

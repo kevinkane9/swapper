@@ -34,4 +34,21 @@ $(document).ready(function(){
         $('body').append(form);
         form.submit();
     });
+
+    $('#status-select').on('hidden.bs.select', function () {
+        var selected = $("#status-select").find("option:selected");
+        var arrSelected = [];
+        selected.each(function () {
+            arrSelected.push($(this).val());
+        });
+        var form = $('<form method="post" action="/meeting-scoreboard"></form>')
+            .append($('<input type="hidden" name="client_status" />').val(arrSelected));
+
+        $('body').append(form);
+        form.submit();
+    });
+
+    client_status = client_status.split(",");
+    $('#status-select').selectpicker('val',client_status);
+    $('#status-select').selectpicker('refresh');
 });

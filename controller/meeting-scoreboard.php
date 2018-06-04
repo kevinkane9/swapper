@@ -13,13 +13,19 @@ if (!User::can('manage-clients')) {
 // handle submissions
 if ('POST' == $_SERVER['REQUEST_METHOD']) {
 	// No Post Request for this yet
-	
-	$meeting_year_select = !empty($_POST['meeting_year_select']) ? $_POST['meeting_year_select'] : '';
+
+    $meeting_year_select = !empty($_POST['meeting_year_select']) ? $_POST['meeting_year_select'] : '';
+    $client_status = !empty($_POST['client_status']) ? $_POST['client_status'] : '';
 }
 
 if (empty($meeting_year_select)) {
 	$meeting_year_select = date('Y');
 }
+
+if (empty($client_status)) {
+	$client_status = 'active';
+}
+
 
 // list pages
 if (Route::uriParam('action')) {
@@ -115,7 +121,7 @@ if (Route::uriParam('action')) {
     $colors = implode(',', array_map([Db::dbh(), 'quote'], GmailEvent::getEligibleColors()));
 
 	for($m=1;$m<=12;$m++) {
-		$meeting_score_sql = "SELECT `c`.`name` AS `client`,`c`.`id` AS `client_id`,
+		$meeting_score_sql = "SELECT `c`.`name` AS `client`,`c`.`id` AS `client_id`, `c`.`status` AS `client_status`,
 									`a`.`email` AS `inbox`,
 									year(`e`.`starts_at`) AS `meeting_year`,
 									count(*) AS `meetings_count`
@@ -128,8 +134,9 @@ if (Route::uriParam('action')) {
                                                 ON e.`event_color_id` = ec.`id`
 							WHERE ( month(`e`.`created_at`) = $m  AND year(`e`.`created_at`) = " . $meeting_year_select . ")
 							AND ec.`background_color` IN ($colors)
-							AND e.`status` != 'cancelled'
-							GROUP BY MONTH(`e`.`created_at`), `e`.`account_id`";
+                            AND e.`status` != 'cancelled'
+                            AND c.`status` IN ('".str_replace(",", "','", $client_status)."')
+                            GROUP BY MONTH(`e`.`created_at`), `e`.`account_id`";
 				$meetings_per_month[$m] = Db::fetchAll($meeting_score_sql);
 
 	}
@@ -148,33 +155,35 @@ if (Route::uriParam('action')) {
 	SELECT `c`.`id` AS `client_id`,
                 `a`.`id` AS `account_id`,
                 `c`.`name` AS `client`,
+                `c`.`status` AS `client_status`,
                 `a`.`email` AS `inbox`,
                 `a`.`status` AS `gmail_status`
 	FROM `sap_client` `c`
         LEFT JOIN `sap_client_account_gmail` `a`
             ON `c`.`id` = `a`.`client_id`
         WHERE '' = '' AND (`a`.`id` IS NOT NULL OR `a`.`id` != '')
-        ");  
-    
+        AND c.`status` IN ('".str_replace(",", "','", $client_status)."')
+        ");
+
     $meeting_per_months_rs = Db::fetchAll("
 	SELECT *
-	FROM `sap_client_meetings_per_month` WHERE `year` = $meeting_year_select"); 
-    
+	FROM `sap_client_meetings_per_month` WHERE `year` = $meeting_year_select");
+
     $meeting_per_months = [];
     if (!empty($meeting_per_months_rs)) {
         foreach ($meeting_per_months_rs as $meeting_per_month) {
             $meeting_per_months[$meeting_per_month['client_id']] = $meeting_per_month;
         }
     }
-    
-    $pre_synced_account = [];    
+
+    $pre_synced_account = [];
     foreach ($synced_accounts as $synced_account) {
         $pre_synced_account[$synced_account['client_id']][$synced_account['account_id']] = $synced_account;
     }
-    
+
     unset($synced_accounts);
 	$synced_accounts = $pre_synced_account;
-	
+
 	$meeting_years[] = date('Y',strtotime("-1 year"));
 	$meeting_years[] = date('Y');
 
@@ -185,6 +194,8 @@ if (Route::uriParam('action')) {
             'synced_accounts' => $synced_accounts,
             'meeting_years' => $meeting_years,
             'meeting_year_select' => $meeting_year_select,
+            'client_status' => $client_status,
+            'status'=> ['active','paused','archived'], // TODO: clean up, make a constant array.
             'meeting_per_months' => $meeting_per_months,
         ]
     );
