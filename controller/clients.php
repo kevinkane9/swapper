@@ -16,9 +16,9 @@ if (!User::can('manage-clients')) {
 if (!empty($_POST['date_apply'])) {
     $date_start = Util::convertDate($_POST['date_start'], 'm/d/Y', 'Y-m-d');
     $date_end = Util::convertDate($_POST['date_end'], 'm/d/Y', 'Y-m-d');
-    
+
     $date_end = date('Y-m-d', strtotime($date_end . ' +1 day'));
-    
+
     $date_start .= ' 05:00:00';
     $date_end .= ' 04:59:59';
 } else {
@@ -140,7 +140,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
             header('Location: /clients');
             exit;
             break;
-            
+
 
         case 'healthscore':
             $clientId = Route::uriParam('id');
@@ -191,7 +191,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
                             'client_id'              => $clientId,
                             'meeting_year'              => $meeting_year
                         ]
-                    );   
+                    );
                 } else {
                     $scoreId = Db::insert(
                         'INSERT INTO sap_client_health_score (
@@ -201,7 +201,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
                                 `opp_in_progress`, `opp_in_progress_av`, `right_prospect_noip`, `right_prospect_noip_av`,
                                 `wrong_prospect_oip`,`wrong_prospect_oip_av`,`wrong_prospect`,`wrong_prospect_av`,
                                 `no_prospect`,`no_prospect_av`,`impression_score`,
-                                `status`,`created_at`) 
+                                `status`,`created_at`)
                             VALUES (
                                 :client_id,:meeting_year,:deal_closed,:deal_closed_av,:weeks_ago,:weeks_ago_av,:total_meetings,:total_meetings_av,
                                 :contract_meetings,:contract_meetings_av,
@@ -240,8 +240,8 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
                             'created_at'  => date("Y-m-d H:i:s"),
                         ]
                     );
-                }                
-                
+                }
+
                 Route::setFlash('success', 'Client health score successfully saved');
             } catch (Exception $e) {
                 throw $e;
@@ -249,7 +249,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
 
             header('Location: /clients/stats/' . $clientId);
             exit;
-            break;            
+            break;
 
         case 'dne-get-data':
             $totalCount = Db::fetchColumn(
@@ -392,7 +392,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
             break;
 
 
-            
+
         case 'profile-save':
             $profileId = Route::uriParam('profile_id');
             try {
@@ -600,7 +600,7 @@ if (Route::uriParam('action')) {
     switch (Route::uriParam('action')) {
         case 'edit':
             $clientId = Route::uriParam('id');
-            
+
             $meeting_year_select = !empty($_SESSION['meeting_year']) ? $_SESSION['meeting_year'] : date('Y');
 
             unset($_SESSION['meeting_year']);
@@ -639,13 +639,13 @@ if (Route::uriParam('action')) {
                   WHERE `client_id` = :id',
                 ['id' => $clientId]
             );
-            
+
             $monthMeetings = Db::fetch(
                 'SELECT * FROM `sap_client_meetings_per_month` WHERE `client_id` = :client_id AND `year` = :year',
                 ['client_id' => $clientId, 'year' => $meeting_year_select]
-            ); 
+            );
 
-          
+
             $meeting_years[] = date('Y',strtotime("-1 year"));
             $meeting_years[] = date('Y');
 
@@ -679,13 +679,13 @@ if (Route::uriParam('action')) {
                     'status'              => array('active','paused','archived') // TODO: clean up, make a constant array.
                 ]
             );
-            break;        
+            break;
         case 'stats':
             $clientId = Route::uriParam('id');
 
             $meeting_year_select = !empty($_SESSION['meeting_year']) ? $_SESSION['meeting_year'] : date('Y');
 
-            unset($_SESSION['meeting_year']);  
+            unset($_SESSION['meeting_year']);
 
             #### Reports counts #####
             $p_created = 0;
@@ -694,7 +694,7 @@ if (Route::uriParam('action')) {
             $p_replied = 0;
             $p_bounced = 0;
             $p_unsubscribed = 0;
-            
+
             $m_deliveries = 0;
             $m_oneoffs = 0;
             $m_sequences = 0;
@@ -702,8 +702,8 @@ if (Route::uriParam('action')) {
             $m_replies = 0;
             $m_bounces = 0;
             $m_unsubscribes = 0;
-            #### Reports counts #####            
-            
+            #### Reports counts #####
+
             $client = Db::fetch(
                 'SELECT * FROM `sap_client` WHERE `id` = :id',
                 ['id' => $clientId]
@@ -718,12 +718,12 @@ if (Route::uriParam('action')) {
                 'SELECT * FROM `sap_client_profile` WHERE `client_id` = :client_id',
                 ['client_id' => $clientId]
             );
-            
+
             $gmail_accounts = Db::fetchAll(
                 'SELECT * FROM `sap_client_account_gmail` WHERE `client_id` = :client_id',
                 ['client_id' => $clientId]
-            );    
-            
+            );
+
             $totalMeetings = 0;
             if (!empty($gmail_accounts)) {
                 foreach ($gmail_accounts as $gmail_account) {
@@ -738,11 +738,11 @@ if (Route::uriParam('action')) {
                     WHERE  ( 1=1 )
                     AND `a`.`id` = :account_id
                     AND month(`e`.`created_at`) = ' . date('m') . '
-                    AND `e`.`title` != "Available" 
+                    AND `e`.`title` != "Available"
                     AND DATE_FORMAT(`e`.`ends_at`, "%H:%i:%s") != "00:00:00"
                     GROUP BY `c`.`id`
                     ORDER by `c`.`id` DESC';
-                    
+
                     $rsTotalMeetings = Db::fetch(
                             $sqlTotalMeetings,
                             ['account_id' => $gmail_account['id']]
@@ -764,21 +764,21 @@ if (Route::uriParam('action')) {
             foreach ($outreachAccounts as $i => $outreachAccount) {
                 $outreachAccounts[$i]['authUrl'] = Outreach::getAuthUrl($outreachAccount['id']);
             }
-            
+
             $gmailAccounts = Db::fetchAll(
                 'SELECT *
                    FROM `sap_client_account_gmail`
                   WHERE `client_id` = :id',
                 ['id' => $clientId]
             );
-            
+
             $monthMeetings = Db::fetch(
                 'SELECT * FROM `sap_client_meetings_per_month` WHERE `client_id` = :client_id AND `year` = :year',
                 ['client_id' => $clientId, 'year' => $meeting_year_select]
-            );   
+            );
 
             $meeting_years[] = date('Y',strtotime("-1 year"));
-            $meeting_years[] = date('Y');            
+            $meeting_years[] = date('Y');
 
             sapperView(
                 'clients-stats',
@@ -796,7 +796,7 @@ if (Route::uriParam('action')) {
                     'gmailAccounts'    => $gmailAccounts,
                     'date_start'    => $date_start,
                     'date_end'    => $date_end,
-                    
+
                     'p_created' => $p_created,
                     'p_mailed' => $p_mailed,
                     'p_opened' => $p_opened,
@@ -810,12 +810,12 @@ if (Route::uriParam('action')) {
                     'm_opens' => $m_opens,
                     'm_replies' => $m_replies,
                     'm_bounces' => $m_bounces,
-                    'm_unsubscribes' => $m_unsubscribes,                    
+                    'm_unsubscribes' => $m_unsubscribes,
                     'meeting_year_select' => $meeting_year_select,
-                    'meeting_years' => $meeting_years,                    
+                    'meeting_years' => $meeting_years,
                 ]
             );
-            break;	
+            break;
         case 'outreach-reports':
             $clientId = Route::uriParam('id');
 
@@ -833,7 +833,7 @@ if (Route::uriParam('action')) {
                 'SELECT * FROM `sap_client_profile` WHERE `client_id` = :client_id',
                 ['client_id' => $clientId]
             );
-            
+
             $outreachAccounts = Db::fetchAll(
                 'SELECT a.*, COUNT(p.`id`) AS `num_prospects`
                    FROM `sap_client_account_outreach` a
@@ -853,12 +853,12 @@ if (Route::uriParam('action')) {
                   WHERE `client_id` = :id',
                 ['id' => $clientId]
             );
-            
+
             $monthMeetings = Db::fetch(
                 'SELECT * FROM `sap_client_meetings_per_month` WHERE `client_id` = :client_id',
                 ['client_id' => $clientId]
             );
-            
+
             #### Reports counts #####
             $date_start = date('Y-09-30');
             $date_end = date('Y-m-t');
@@ -868,7 +868,7 @@ if (Route::uriParam('action')) {
             $p_replied = 0;
             $p_bounced = 0;
             $p_unsubscribed = 0;
-            
+
             $m_deliveries = 0;
             $m_oneoffs = 0;
             $m_sequences = 0;
@@ -887,7 +887,7 @@ if (Route::uriParam('action')) {
                     'outreachAccounts' => $outreachAccounts,
                     'monthMeetings' => $monthMeetings,
                     'gmailAccounts'    => $gmailAccounts,
-                    
+
                     'p_created' => $p_created,
                     'p_mailed' => $p_mailed,
                     'p_opened' => $p_opened,
@@ -904,7 +904,7 @@ if (Route::uriParam('action')) {
                     'm_unsubscribes' => $m_unsubscribes,
                 ]
             );
-            break;	
+            break;
         case 'hsedit':
             $clientId = Route::uriParam('id');
 			$field = $_POST['name'];
@@ -914,7 +914,7 @@ if (Route::uriParam('action')) {
                 'SELECT * FROM `sap_client_health_score` WHERE `client_id` = :client_id',
                 ['client_id' => $clientId]
             );
-            
+
             if (!empty($healthScores)) {
                     # Updating health score
 
@@ -929,7 +929,7 @@ if (Route::uriParam('action')) {
                     $sql = 'UPDATE `sap_client_health_score`
                                             SET '.$field_sql.',
                                                     `modified_at` = :modified_at
-                                    WHERE `client_id` = :client_id';				
+                                    WHERE `client_id` = :client_id';
 
                     Db::query(
                             $sql,
@@ -957,9 +957,9 @@ if (Route::uriParam('action')) {
                             ]
                     );
             }
-            
-            
-            exit;            
+
+
+            exit;
             break;
         case 'csm':
             $clientId = Route::uriParam('id');
@@ -1053,13 +1053,13 @@ if (Route::uriParam('action')) {
                 'SELECT * FROM `sap_client_meetings_per_month` WHERE `client_id` = :client_id AND `year` = :year',
                 ['client_id' => $clientId, 'year'=>$meeting_year]
             );
-            
+
             if ($month_meetings) {
                 try {
                     $sql = '';
 
                     $sql .= 'UPDATE `sap_client_meetings_per_month`';
-                    $sql .= ' SET '; 
+                    $sql .= ' SET ';
                     $sql .= "`meetings_jan` = {$meetings_jan},";
                     $sql .= "`meetings_feb` = {$meetings_feb},";
                     $sql .= "`meetings_mar` = {$meetings_mar},";
@@ -1084,7 +1084,7 @@ if (Route::uriParam('action')) {
                     $sql = '';
 
                     $sql .= 'INSERT INTO `sap_client_meetings_per_month`';
-                    $sql .= ' (year,meetings_jan,meetings_feb,meetings_mar,meetings_apr,meetings_may,meetings_jun,meetings_jul,meetings_aug,meetings_sep,meetings_oct,meetings_nov,meetings_dec, client_id) '; 
+                    $sql .= ' (year,meetings_jan,meetings_feb,meetings_mar,meetings_apr,meetings_may,meetings_jun,meetings_jul,meetings_aug,meetings_sep,meetings_oct,meetings_nov,meetings_dec, client_id) ';
                     $sql .= " VALUES ({$meeting_year},{$meetings_jan},{$meetings_feb},{$meetings_mar},{$meetings_apr},{$meetings_may},{$meetings_jun},{$meetings_jul},{$meetings_aug},{$meetings_sep},{$meetings_oct},{$meetings_nov},{$meetings_dec},{$clientId})";
 
                     Db::query($sql);
@@ -1092,20 +1092,20 @@ if (Route::uriParam('action')) {
                      echo  $e->getMessage();
                 }
             }
-            
+
             $response['total_meetings_av'] = array_sum($meetings);
             $response['status'] = 'success';
 
 
             echo json_encode($response);
             exit;
-            break;   
+            break;
         case 'ajax-set-session-data':
             $meeting_year = !empty($_POST['meeting_year']) ? $_POST['meeting_year'] : date('Y');
             $_SESSION['meeting_year'] = $meeting_year;
 
             exit;
-            break;   
+            break;
         case 'ajax-stats-get-mcr':
             $response = [];
             $client_id = $_POST['_client_id'];
@@ -1126,22 +1126,22 @@ if (Route::uriParam('action')) {
                 if (!empty($outreachAccounts)) {
                     foreach ($outreachAccounts as $outreachAccount) {
                         $access_token = $outreachAccount['access_token'];
-                        
-                        $sql = "SELECT 
+
+                        $sql = "SELECT
                                         *
                                       FROM
-                                        `sap_prospect_mailings` 
-                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}' 
-                                        AND state != 'bounced'  
+                                        `sap_prospect_mailings`
+                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}'
+                                        AND state != 'bounced'
                                         AND prospect_id != 0
                                         AND (delivered_at BETWEEN '$date_start' AND '$date_end')
-                                        GROUP BY prospect_id";    
+                                        GROUP BY prospect_id";
                         $count_arr = Db::fetchAll(
                             $sql
-                        ); 
+                        );
 
                         $mailed_count += count($count_arr);
-                        
+
                         ## $mailed_count += count($mailed_count_arr);
                     }
                 }
@@ -1157,7 +1157,7 @@ if (Route::uriParam('action')) {
                     WHERE  ( 1=1 )
                     AND `c`.`id` = :client_id
                     AND (`e`.`created_at` BETWEEN '" . $date_start . "' AND '" . $date_end . "')
-                    AND `e`.`title` != 'Available' 
+                    AND `e`.`title` != 'Available'
                     AND DATE_FORMAT(`e`.`ends_at`, '%H:%i:%s') != '00:00:00'
                     GROUP BY `c`.`id`";
 
@@ -1170,26 +1170,26 @@ if (Route::uriParam('action')) {
 
                 $response['status'] = 'success';
                 $response['meta'] = "($mailed_count / $total_meetings_counts)";
-                
+
                 $mcr = !empty($mailed_count) ? ($total_meetings_counts / $mailed_count) * 100 : 0;
                 $response['mcr'] = round($mcr, 2);
             } catch (Exception $exc) {
 
                 $response['status'] = 'fail';
-                $response['mcr'] = 0;                
+                $response['mcr'] = 0;
                 $response['message'] = $exc->getMessage();
             }
 
             echo json_encode($response);
             break;
-        case 'ajax-stats-get-inbox-counts': 
+        case 'ajax-stats-get-inbox-counts':
             $response = [];
             $inbox_counts = [];
-            
+
             $client_id = $_REQUEST['_client_id'];
             $date_start = Util::convertDate($_POST['_date_start'], 'm/d/Y', 'Y-m-d');
             $date_end = Util::convertDate($_POST['_date_end'], 'm/d/Y', 'Y-m-d');
-            
+
             $accounts = Db::fetchAll(
                 'SELECT * FROM `sap_client_account_gmail` WHERE `client_id` = :client_id',
                 ['client_id' => $client_id]
@@ -1219,13 +1219,13 @@ if (Route::uriParam('action')) {
                             . "FROM `sap_gmail_account_stats` "
                             . "WHERE `gmail_account_id` = '{$account['id']}'"
                     );
-                        
+
                     if (!empty($account_stats)) {
                         foreach ($account_stats as $col=>$counts) {
                             if (strpos($col,'label') !== false) {
                                 $label_counts = '';
 
-                                $label_counts['name'] = ucwords(str_replace('_',' ',str_replace('label_count_','',$col))); 
+                                $label_counts['name'] = ucwords(str_replace('_',' ',str_replace('label_count_','',$col)));
                                 $label_counts['y'] = $counts;
 
                                 $inbox_counts[] = $label_counts;
@@ -1234,19 +1234,19 @@ if (Route::uriParam('action')) {
                     }
                 }
             }
-            
+
             $response['status'] = 'success';
             $response['inbox_counts'] = $inbox_counts;
 
-            echo json_encode($response);            
+            echo json_encode($response);
             break;
-        case 'ajax-stats-get-avg-openrate': 
+        case 'ajax-stats-get-avg-openrate':
             $response = [];
-            
+
             $client_id = $_REQUEST['_client_id'];
             $date_start = Util::convertDate($_POST['_date_start'], 'm/d/Y', 'Y-m-d');
             $date_end = Util::convertDate($_POST['_date_end'], 'm/d/Y', 'Y-m-d');
-            
+
             try {
                 $outreachAccounts = Db::fetchAll(
                     "SELECT a.*
@@ -1260,21 +1260,21 @@ if (Route::uriParam('action')) {
                 if (!empty($outreachAccounts)) {
                     foreach ($outreachAccounts as $outreachAccount) {
                         $access_token = $outreachAccount['access_token'];
-                        
-                        $sql_opened = "SELECT 
+
+                        $sql_opened = "SELECT
                                         *
                                       FROM
-                                        `sap_prospect_mailings` 
-                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}' 
-                                        AND state != 'bounced' 
+                                        `sap_prospect_mailings`
+                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}'
+                                        AND state != 'bounced'
                                         AND prospect_id != 0
                                         AND (date_format(opened_at, '%Y-%m-%d') BETWEEN '$date_start' AND '$date_end')
                                         AND (date_format(delivered_at, '%Y-%m-%d') BETWEEN '$date_start' AND '$date_end')
-                                        GROUP BY prospect_id";    
+                                        GROUP BY prospect_id";
                         $opened_count_arr = Db::fetchAll(
                             $sql_opened
-                        );                         
-                        
+                        );
+
                         $opened_count += count($opened_count_arr);
 
 //                        $params['filter[deliveredAt]'] = date('Y-m-01') . ".." . date('Y-m-t');
@@ -1285,55 +1285,55 @@ if (Route::uriParam('action')) {
 //                            'get',
 //                            Outreach::URL_REST_v2
 //                        );
-//                     
+//
 //                        $mailed_count += $response_mailed['data']['meta']['count'];
-//                        $sql_mailed = "SELECT 
+//                        $sql_mailed = "SELECT
 //                                        count(*) AS mailed_count
 //                                      FROM
-//                                        `sap_prospect_mailings` 
-//                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}' 
-//                                        AND month(`created_at`) = " . date('m');    
+//                                        `sap_prospect_mailings`
+//                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}'
+//                                        AND month(`created_at`) = " . date('m');
 //                        $mailed_count_arr = Db::fetch(
 //                            $sql_mailed
-//                        );                         
+//                        );
 //                        $mailed_count += $mailed_count_arr['mailed_count'];
-                        
-                        $sql = "SELECT 
+
+                        $sql = "SELECT
                                         *
                                       FROM
-                                        `sap_prospect_mailings` 
-                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}' 
-                                        AND state != 'bounced'  
+                                        `sap_prospect_mailings`
+                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}'
+                                        AND state != 'bounced'
                                         AND prospect_id != 0
                                         AND (date_format(delivered_at, '%Y-%m-%d') BETWEEN '$date_start' AND '$date_end')
-                                        GROUP BY prospect_id";    
+                                        GROUP BY prospect_id";
                         $count_arr = Db::fetchAll(
                             $sql
-                        ); 
+                        );
 
-                        $mailed_count += count($count_arr);                        
-                        
+                        $mailed_count += count($count_arr);
+
                     }
-                
+
                 }
             } catch (Exception $exc) {
 
                 $response['status'] = 'fail';
-                $response['average_openrate'] = 0;                
+                $response['average_openrate'] = 0;
                 $response['message'] = $exc->getMessage();
-            }    
+            }
 
             $response['status'] = 'success';
-            $response['average_openrate'] = !empty($mailed_count) ? round(($opened_count / $mailed_count) * 100) : 0;            
+            $response['average_openrate'] = !empty($mailed_count) ? round(($opened_count / $mailed_count) * 100) : 0;
 
-            echo json_encode($response);            
+            echo json_encode($response);
             break;
-        case 'ajax-stats-get-avg-replyrate':     
+        case 'ajax-stats-get-avg-replyrate':
             $response = [];
             $client_id = $_POST['_client_id'];
             $date_start = Util::convertDate($_POST['_date_start'], 'm/d/Y', 'Y-m-d');
             $date_end = Util::convertDate($_POST['_date_end'], 'm/d/Y', 'Y-m-d');
-            
+
             try {
                 $outreachAccounts = Db::fetchAll(
                     "SELECT a.*
@@ -1344,37 +1344,37 @@ if (Route::uriParam('action')) {
 
                 $replied_count = 0;
                 $mailed_count = 0;
-                
+
                 if (!empty($outreachAccounts)) {
                     foreach ($outreachAccounts as $outreachAccount) {
                         $access_token = $outreachAccount['access_token'];
 
-                            $sql = "    SELECT 
+                            $sql = "    SELECT
                                             *
                                         FROM
-                                            `sap_prospect_mailings` 
+                                            `sap_prospect_mailings`
                                         WHERE `outreach_account_id` = '{$outreachAccount['id']}'
                                             AND state = 'replied'
                                             AND (date_format(created_at, '%Y-%m-%d') BETWEEN '$date_start' AND '$date_end')
-                                            AND (date_format(replied_at, '%Y-%m-%d') BETWEEN '$date_start' AND '$date_end')";    
+                                            AND (date_format(replied_at, '%Y-%m-%d') BETWEEN '$date_start' AND '$date_end')";
                             $count_arr = Db::fetchAll(
                                 $sql
-                            ); 
+                            );
 
                             $replied_count += count($count_arr);
-                    
-                            $sql = "SELECT 
+
+                            $sql = "SELECT
                                             *
                                           FROM
-                                            `sap_prospect_mailings` 
-                                          WHERE `outreach_account_id` = '{$outreachAccount['id']}' 
-                                            AND state != 'bounced'  
+                                            `sap_prospect_mailings`
+                                          WHERE `outreach_account_id` = '{$outreachAccount['id']}'
+                                            AND state != 'bounced'
                                             AND prospect_id != 0
                                             AND (date_format(delivered_at, '%Y-%m-%d') BETWEEN '$date_start' AND '$date_end')
-                                            GROUP BY prospect_id";    
+                                            GROUP BY prospect_id";
                             $count_arr = Db::fetchAll(
                                 $sql
-                            ); 
+                            );
 
                             $mailed_count += count($count_arr);
                     }
@@ -1382,16 +1382,16 @@ if (Route::uriParam('action')) {
             } catch (Exception $exc) {
 
                 $response['status'] = 'fail';
-                $response['average_replyrate'] = 0;                
+                $response['average_replyrate'] = 0;
                 $response['message'] = $exc->getMessage();
-            }  
+            }
 
             $response['status'] = 'success';
-            $response['average_replyrate'] = !empty($mailed_count) ? round(($replied_count / $mailed_count) * 100, 2) : 0;            
-            
-            echo json_encode($response);            
+            $response['average_replyrate'] = !empty($mailed_count) ? round(($replied_count / $mailed_count) * 100, 2) : 0;
+
+            echo json_encode($response);
             break;
-        case 'ajax-stats-get-no-prospects-bounced':   
+        case 'ajax-stats-get-no-prospects-bounced':
             $response = [];
             $client_id = $_POST['_client_id'];
             $date_start = Util::convertDate($_POST['_date_start'], 'm/d/Y', 'Y-m-d');
@@ -1407,45 +1407,45 @@ if (Route::uriParam('action')) {
                 );
 
                 $counts_in_sequence = 0;
-                
+
                 if (!empty($outreachAccounts)) {
                     foreach ($outreachAccounts as $outreachAccount) {
-                        $sql = "SELECT 
+                        $sql = "SELECT
                                         *
                                       FROM
-                                        `sap_prospect_mailings` 
-                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}' 
-                                        AND state = 'bounced'                                        
+                                        `sap_prospect_mailings`
+                                      WHERE `outreach_account_id` = '{$outreachAccount['id']}'
+                                        AND state = 'bounced'
                                         AND prospect_id != 0
                                         AND (date_format(bounced_at, '%Y-%m-%d') BETWEEN '$date_start' AND '$date_end')
-                                        GROUP BY prospect_id";    
+                                        GROUP BY prospect_id";
                         $count_arr = Db::fetchAll(
                             $sql
-                        ); 
+                        );
 
                         $counts_bounced += count($count_arr);
                         ## $counts_bounced += $bounced_count_arr['counts_in_sequence'];
-                    }                
-                }   
-                
-                            
+                    }
+                }
+
+
                 $response['status'] = 'success';
-                $response['no_prospects_bounced'] = $counts_bounced;                
+                $response['no_prospects_bounced'] = $counts_bounced;
             } catch (Exception $exc) {
 
                 $response['status'] = 'fail';
-                $response['no_prospects_bounced'] = 0;                
+                $response['no_prospects_bounced'] = 0;
                 $response['message'] = $exc->getMessage();
             }
-            
-            echo json_encode($response);            
+
+            echo json_encode($response);
             break;
         case 'ajax-stats-get-no-prospects-in-sequence':
             $response = [];
             $client_id = $_POST['_client_id'];
             $date_start = Util::convertDate($_POST['_date_start'], 'm/d/Y', 'Y-m-d');
             $date_end = Util::convertDate($_POST['_date_end'], 'm/d/Y', 'Y-m-d');
-            
+
             try {
                 $outreachAccounts = Db::fetchAll(
                     "SELECT a.*
@@ -1455,20 +1455,20 @@ if (Route::uriParam('action')) {
                 );
 
                 $counts_in_sequence = 0;
-                
+
                 if (!empty($outreachAccounts)) {
                     foreach ($outreachAccounts as $outreachAccount) {
-                        $sql_mailed = "SELECT 
+                        $sql_mailed = "SELECT
                                         COUNT(*) AS counts_in_sequence
                                       FROM
-                                        `sap_outreach_prospect_stage_v2` 
-                                      WHERE `sap_outreach_prospect_stage_v2`.`outreach_prospect_id` IN 
-                                        (SELECT 
-                                          id 
+                                        `sap_outreach_prospect_stage_v2`
+                                      WHERE `sap_outreach_prospect_stage_v2`.`outreach_prospect_id` IN
+                                        (SELECT
+                                          id
                                         FROM
-                                          `sap_outreach_prospect` 
-                                        WHERE sap_outreach_prospect.`outreach_account_id` = '{$outreachAccount['id']}') 
-                                        AND `sap_outreach_prospect_stage_v2`.`stage_id` = 2 "; 
+                                          `sap_outreach_prospect`
+                                        WHERE sap_outreach_prospect.`outreach_account_id` = '{$outreachAccount['id']}')
+                                        AND `sap_outreach_prospect_stage_v2`.`stage_id` = 2 ";
 
 
 
@@ -1477,27 +1477,27 @@ if (Route::uriParam('action')) {
                         );
 
                         $counts_in_sequence += $mailed_count_arr['counts_in_sequence'];
-                    }                
-                }   
-                
-                            
+                    }
+                }
+
+
                 $response['status'] = 'success';
                 $response['no_prospects_in_sequence'] = $counts_in_sequence;
             } catch (Exception $exc) {
 
                 $response['status'] = 'fail';
-                $response['no_prospects_in_sequence'] = 0;                
+                $response['no_prospects_in_sequence'] = 0;
                 $response['message'] = $exc->getMessage();
             }
-            
-            echo json_encode($response);            
+
+            echo json_encode($response);
             break;
-        case 'ajax-stats-get-no-prospects-cold-pending':            
+        case 'ajax-stats-get-no-prospects-cold-pending':
             $response = [];
             $client_id = $_POST['_client_id'];
             $date_start = Util::convertDate($_POST['_date_start'], 'm/d/Y', 'Y-m-d');
             $date_end = Util::convertDate($_POST['_date_end'], 'm/d/Y', 'Y-m-d');
-            
+
             try {
                 $outreachAccounts = Db::fetchAll(
                     "SELECT a.*
@@ -1507,41 +1507,41 @@ if (Route::uriParam('action')) {
                 );
 
                 $counts_in_sequence = 0;
-                
+
                 if (!empty($outreachAccounts)) {
                     foreach ($outreachAccounts as $outreachAccount) {
-                        $sql_mailed = "SELECT 
+                        $sql_mailed = "SELECT
                                         COUNT(*) AS counts_cold_pending
                                       FROM
-                                        `sap_outreach_prospect_stage_v2` 
-                                      WHERE `sap_outreach_prospect_stage_v2`.`outreach_prospect_id` IN 
-                                        (SELECT 
-                                          id 
+                                        `sap_outreach_prospect_stage_v2`
+                                      WHERE `sap_outreach_prospect_stage_v2`.`outreach_prospect_id` IN
+                                        (SELECT
+                                          id
                                         FROM
-                                          `sap_outreach_prospect` 
-                                        WHERE sap_outreach_prospect.`outreach_account_id` = '{$outreachAccount['id']}') 
-                                        AND `sap_outreach_prospect_stage_v2`.`stage_id` = 1 "; 
+                                          `sap_outreach_prospect`
+                                        WHERE sap_outreach_prospect.`outreach_account_id` = '{$outreachAccount['id']}')
+                                        AND `sap_outreach_prospect_stage_v2`.`stage_id` = 1 ";
 
                         $mailed_count_arr = Db::fetch(
                             $sql_mailed
                         );
 
                         $counts_in_sequence += $mailed_count_arr['counts_cold_pending'];
-                    }                
-                }   
-                
-                            
+                    }
+                }
+
+
                 $response['status'] = 'success';
                 $response['no_prospects_cold_pending'] = $counts_in_sequence;
             } catch (Exception $exc) {
 
                 $response['status'] = 'fail';
-                $response['no_prospects_cold_pending'] = 0;                
+                $response['no_prospects_cold_pending'] = 0;
                 $response['message'] = $exc->getMessage();
             }
-            
-            echo json_encode($response);            
-            break;             
+
+            echo json_encode($response);
+            break;
         case 'delete':
             $clientId = Route::uriParam('id');
             Db::query(
@@ -1682,7 +1682,7 @@ if (Route::uriParam('action')) {
             header('Location: /clients/edit/' . $clientId);
             exit;
             break;
-        
+
     }
 } else {
     // List of all users stored in the database to add to the CSM drop down list
