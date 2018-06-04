@@ -66,7 +66,7 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                     }
             });
 
-            var clientsTable = $('#clients-table').DataTable({
+            var cTable = $('#clients-table').DataTable({
                     "bPaginate": false,
                     dom: 'B<"clientWrapper">frtip',
                     buttons: [
@@ -76,42 +76,41 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                                     titleAttr: 'CSV',
                                     exportOptions: {
                                             columns: [ 0, 1, 2 ]
-                                    }				
-                            },            
+                                    }
+                            },
                             {
                                     extend:    'print',
                                     text:      '<i class="fa fa-print"></i>',
                                     titleAttr: 'Print',
                                     exportOptions: {
                                             columns: [ 0, 1, 2 ]
-                                    }				
+                                    }
                             }
                     ]
             });
 
-            let clientStatusData = {
+            let cStatusData = {
                 'active': 'Active',
                 'paused': 'Paused',
                 'archived': 'Archived'
             }
 
-            var clientStatusSelect = $('<select multiple class="selectpicker clients-select" />');
+            let cStatusSelect = $('<select multiple class="selectpicker clients-select" />');
 
-            for(var val in clientStatusData) {
-                $('<option />', {value: val, text: clientStatusData[val]}).appendTo(clientStatusSelect);
+            for(var val in cStatusData) {
+                $('<option />', {value: val, text: cStatusData[val]}).appendTo(cStatusSelect);
             }
 
             $('<label>Status: </label>').appendTo('.clientWrapper');
-            clientStatusSelect.appendTo('.clientWrapper');
+            cStatusSelect.appendTo('.clientWrapper');
 
             $('select.clients-select').change( function() {
                 var status = [];
-                jQuery('select.clients-select :selected').each(function(j, selected){
-                  status[j] = jQuery(selected).val();
+                $('select.clients-select :selected').each(function(j, selected){
+                  status[j] = $(selected).val();
                 });
                 var st = status.join("|");
-                console.log(st)
-                clientsTable.fnFilter(st, 2, true, false, true, true);
+                $("#clients-table").dataTable().fnFilter(st, 3, true, false, true, true)
             } );
 
 

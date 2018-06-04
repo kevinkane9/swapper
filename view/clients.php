@@ -87,7 +87,7 @@
                                         <th class="text-center">Client Name</th>
                                         <th class="text-center">CSM</th>
                                         <th class="text-center">Pod</th>
-                                        <th>Status</th>
+                                        <th class="text-center hide">Status</th>
                                         <th class="text-center" width="170">Actions</th>
                                     </tr>
                                 </thead>
@@ -112,7 +112,7 @@
                                         <td class="text-left" id="pod_<?php echo $client['id']; ?>">
                                             <?php echo $client['pod']; ?>
                                         </td>
-                                        <td class="text-left"><?php echo ucfirst($client['client_status']);?></td>
+                                        <td class="text-left hide"><?php echo ucfirst($client['client_status']);?></td>
                                         <td class="actions text-center" width="170">
                                             <a href="/clients/edit/<?php echo $client['id']; ?>" class="fa fa-pencil"></a>
                                             <a href="/clients/stats/<?php echo $client['id']; ?>" class="fa fa-bar-chart-o"></a>
