@@ -130,7 +130,7 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
         var month = $('#month').val();
         var year = $('#year').val();
         var sourceUrl = $('#meetings-calendar').attr('data-source-url');
-        
+
         $('#meetings-calendar').fullCalendar({
             timeZone: 'local',
             eventLimit: true, // for all non-agenda views

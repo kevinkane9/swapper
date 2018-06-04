@@ -23,3 +23,13 @@
 .clientWrapper btn-group.bootstrap-select {
     margin-left: 0.5em;
 }
+
+.fa-active-client:before {
+    content: "\f04b";
+}
+.fa-paused-client:before {
+    content: "\f04c";
+}
+.fa-archived-client:before {
+    content: "\f187";
+}

@@ -117,7 +117,7 @@
                                             <a href="/clients/edit/<?php echo $client['id']; ?>" class="fa fa-pencil"></a>
                                             <a href="/clients/stats/<?php echo $client['id']; ?>" class="fa fa-bar-chart-o"></a>
                                             <a href="/clients/dne/<?php echo $client['id']; ?>" class="fa fa-exclamation dne"> <span>DNE</span></a>
-                                            <a href="/clients/delete/<?php echo $client['id']; ?>" class="sweet-confirm-href delete fa fa-times"></a>
+                                            <a href="/clients/ajax-update-status" data-client="<?php echo $client['id']; ?>" class="fa fa-<?php echo $client['client_status'] ?>-client status-toggle"></a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

@@ -42,6 +42,7 @@ $(document).ready(function(){
             arrSelected.push($(this).val());
         });
         var form = $('<form method="post" action="/meeting-scoreboard"></form>')
+            .append($('<input type="hidden" name="meeting_year_select" />').val( $('#meeting-year-select').val() ))
             .append($('<input type="hidden" name="client_status" />').val(arrSelected));
 
         $('body').append(form);

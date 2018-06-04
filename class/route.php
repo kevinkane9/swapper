@@ -54,6 +54,7 @@ class Route {
 
         'clients/(ajax-get-eligible-survey-events)/(\d*)' => ['clients', ['action', 'client_id']],
         'clients/(ajax-send-survey-invitation)' => ['clients', ['action']],
+        'clients/(ajax-update-status)' => ['clients', ['action']],
 
         'clients/(stats)/(\d*)'       => ['clients', ['action', 'id']],
         'clients/(outreach-reports)/(\d*)'       => ['clients', ['action', 'id']],

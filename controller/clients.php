@@ -29,6 +29,13 @@ if (!empty($_POST['date_apply'])) {
 // handle submissions
 if ('POST' == $_SERVER['REQUEST_METHOD']) {
     switch (Route::uriParam('action')) {
+        case 'ajax-update-status':
+            try {
+                $query = Db::updateRowById('client', $_POST['client'], ['status' => $_POST['status']]);
+                Route::setFlash('success', 'Client successfully saved');
+            } catch (Exception $e) {}
+        exit;
+        break;
         case 'create':
             try {
                 $clientId = Db::createRow(
