@@ -110,9 +110,13 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                   status[j] = $(selected).val();
                 });
                 var st = status.join("|");
+                if(!st)
+                    st = 'active';
+
                 $("#clients-table").dataTable().fnFilter(st, 3, true, false, true, true)
             } );
 
+            $("#clients-table").dataTable().fnFilter('active', 3, true, false, true, true)
 
             $('.data-table').DataTable();
             $('.data-table-comments').DataTable( {
