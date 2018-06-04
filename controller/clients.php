@@ -84,7 +84,7 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
                 );
 
                 $client = Db::fetch(
-                    'SELECT `name`, `sign_on_date`, `launch_date`, `expiration_date`, `contract_goal`, `monthly_goal` FROM `sap_client` WHERE `id` = :id',
+                    'SELECT `name`, `status`, `sign_on_date`, `launch_date`, `expiration_date`, `contract_goal`, `monthly_goal` FROM `sap_client` WHERE `id` = :id',
                     ['id' => $clientId]
                 );
 
@@ -103,10 +103,11 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
                 Db::updateRowById('client', $clientId, $data);
 
                 unset($data['user_id']);
+                unset($data['prosperworks_id']);
 
                 // If at least one of the fields has changed
                 if (!empty(array_diff($client, $data))) {
-                    Db::createRow(
+                    $sql = Db::createRow(
                         'client_history',
                         array_merge(
                             $data,
@@ -670,10 +671,15 @@ if (Route::uriParam('action')) {
                 'SELECT * FROM `sap_client_prosperworks` WHERE `name` IS NOT NULL ORDER BY `name` ASC'
             );
 
+            $history = Db::fetch(
+                'SELECT * FROM `sap_client_history` WHERE `client_id` = :client_id ORDER BY id DESC LIMIT 1',
+                ['client_id' => $clientId]
+            );
             sapperView(
                 'clients-edit',
                 [
                     'client'              => $client,
+                    'history'             => $history,
                     'healthScores'        => $healthScores,
                     'profiles'            => $profiles,
                     'outreachAccounts'    => $outreachAccounts,
