@@ -66,9 +66,9 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                     }
             });
 
-            $('#clients-table').DataTable({
+            var clientsTable = $('#clients-table').DataTable({
                     "bPaginate": false,
-                    dom: 'Bfrtip',
+                    dom: 'B<"clientWrapper">frtip',
                     buttons: [
                             {
                                     extend:    'csvHtml5',
@@ -88,15 +88,41 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                             }
                     ]
             });
-            
+
+            let clientStatusData = {
+                'active': 'Active',
+                'paused': 'Paused',
+                'archived': 'Archived'
+            }
+
+            var clientStatusSelect = $('<select multiple class="selectpicker clients-select" />');
+
+            for(var val in clientStatusData) {
+                $('<option />', {value: val, text: clientStatusData[val]}).appendTo(clientStatusSelect);
+            }
+
+            $('<label>Status: </label>').appendTo('.clientWrapper');
+            clientStatusSelect.appendTo('.clientWrapper');
+
+            $('select.clients-select').change( function() {
+                var status = [];
+                jQuery('select.clients-select :selected').each(function(j, selected){
+                  status[j] = jQuery(selected).val();
+                });
+                var st = status.join("|");
+                console.log(st)
+                clientsTable.fnFilter(st, 2, true, false, true, true);
+            } );
+
+
             $('.data-table').DataTable();
             $('.data-table-comments').DataTable( {
                 "bFilter": false,
                 "bLengthChange": false
             });
 
-    });	
-    
+    });
+
     $(document).ready(function() {
         var month = $('#month').val();
         var year = $('#year').val();

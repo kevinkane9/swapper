@@ -7,3 +7,19 @@
     padding: 3px 6px !important;
 }
 /************CUSTOM STYLES********************************/
+
+.clientWrapper {
+    position: relative;
+    float: right;
+    margin-left: 20px;
+}
+
+.clientWrapper label {
+    font-weight: normal;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.clientWrapper btn-group.bootstrap-select {
+    margin-left: 0.5em;
+}

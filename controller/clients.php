@@ -1700,7 +1700,7 @@ if (Route::uriParam('action')) {
     );
 
     $clients = Db::fetchAll(
-        "SELECT c.*, COUNT(cs.`id`) AS `suppression_domains`, hs.*, cp.`name` as pod, CONCAT(u.`first_name`, ' ', u.`last_name`) as cms
+        "SELECT c.*, c.status AS client_status,COUNT(cs.`id`) AS `suppression_domains`, hs.*, cp.`name` as pod, CONCAT(u.`first_name`, ' ', u.`last_name`) as cms
          FROM `sap_client` c
          LEFT JOIN `sap_client_dne` cs ON cs.`client_id` = c.`id`
          LEFT JOIN `sap_client_health_score` hs ON hs.`client_id` = c.`id`
