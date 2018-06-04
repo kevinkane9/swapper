@@ -217,7 +217,7 @@ foreach ($titlesDB as $titleDB) {
 }
 
 $departments  = Db::fetchAll('SELECT * FROM `sap_department` ORDER BY `department` ASC');
-$clients      = Db::fetchAll('SELECT * FROM `sap_client` ORDER BY `name` ASC');
+$clients      = Db::fetchAll('SELECT * FROM `sap_client` WHERE `sap_client`.`status`="active" ORDER BY `name` ASC');
 
 sapperView(
     'process-filtered',

@@ -514,6 +514,7 @@ foreach (
         'SELECT a.*, c.`name`
            FROM `sap_client_account_outreach` a
       LEFT JOIN `sap_client` c ON a.`client_id` = c.`id`
+      WHERE c.`status` = "active"
        ORDER BY c.`name` ASC, a.`email` ASC'
     ) as $account
 ) {

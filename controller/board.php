@@ -41,7 +41,7 @@ switch (Route::uriParam('action')) {
         LEFT JOIN    `sap_user` u4 ON u4.`id` = r.`assigned_to`
         LEFT JOIN    `sap_client_account_outreach` cao ON cao.`id` = r.`outreach_account_id`
         LEFT JOIN    `sap_client` c ON c.`id` = cao.`client_id`
-            WHERE  r.`type` = :type';
+            WHERE  r.`type` = :type AND c.`status`="active"';
 
         $params = ['new' => ['type' => 'new'], 'recycled' => ['type' => 'recycled']];
 
