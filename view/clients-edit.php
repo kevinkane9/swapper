@@ -35,13 +35,13 @@
                                 <table class="table table-bordered">
                                     <tbody>
                                     <tr>
-                                        <th>Name:</th>
-                                        <td><input type="text" class="form-control" name="name" value="<?php echo $clientFormData['name']; ?>" data-validation="not-empty" /></td>
-                                    </tr>
-                                    <tr>
                                         <td colspan="2" class="text-right">
                                             <em for=""><?php echo ucfirst($history['status']);?></em> since: <?php echo date('jS M Y',strtotime( $history['updated_at'] ));?>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Name:</th>
+                                        <td><input type="text" class="form-control" name="name" value="<?php echo $clientFormData['name']; ?>" data-validation="not-empty" /></td>
                                     </tr>
                                     <tr>
                                         <th>Status</th>
