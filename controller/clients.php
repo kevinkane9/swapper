@@ -31,7 +31,23 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
     switch (Route::uriParam('action')) {
         case 'ajax-update-status':
             try {
-                $query = Db::updateRowById('client', $_POST['client'], ['status' => $_POST['status']]);
+                $client = Db::fetch(
+                    'SELECT * FROM `sap_client` WHERE `id` = :id',
+                    ['id' => $_POST['client']]
+                );
+
+                Db::updateRowById('client', $_POST['client'], ['status' => $_POST['status']]);
+
+                if ($client['status'] != $_POST['status']) {
+                    Db::createRow(
+                        'client_history',
+                        array_merge(
+                            ['status' => $_POST['status'], 'name'=>$client['name']],
+                            ['client_id' => $_POST['client']]
+                        )
+                    );
+                }
+
                 Route::setFlash('success', 'Client successfully saved');
             } catch (Exception $e) {}
         exit;
