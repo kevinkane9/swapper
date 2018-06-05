@@ -39,7 +39,7 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                     validate: function(value) {
                             if($.trim(value) == '') {
                                 return 'This field is required';
-                            }				
+                            }
 
                             /*
                             if(isNaN(value)) {
@@ -138,11 +138,11 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                 agenda: {
                     eventLimit: 6 // adjust to 6 only for agendaWeek/agendaDay
                 }
-            },            
+            },
             allDayDefault: false,
-            eventRender: function (event, element, view) { 
-                $(element).each(function () { 
-                    $(this).attr('date-num', event.start.format('YYYY-MM-DD')); 
+            eventRender: function (event, element, view) {
+                $(element).each(function () {
+                    $(this).attr('date-num', event.start.format('YYYY-MM-DD'));
                 });
             },
             eventAfterAllRender: function(view){
@@ -152,10 +152,10 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                     var eventCount = $('.fc-event[date-num="' + dateNum + '"]').length;
                     if(eventCount){
                         var meetingTxt =  eventCount > 1 ? ' Meetings' : ' Meeting';
-                        var html = '<span class="event-count">' + 
+                        var html = '<span class="event-count">' +
                                     '<a href="#">' +
                                     '<strong>' +
-                                    eventCount + 
+                                    eventCount +
                                     '</strong>' +
                                     meetingTxt +
                                     '</a>' +
@@ -165,7 +165,7 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                         dayEl.find('.event-count').not(':first').remove();
                     }
                 }
-            },           
+            },
             eventSources: [
                 {
                     url: sourceUrl,
@@ -178,19 +178,19 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                         alert('there was an error while fetching events!');
                     }
                 }
-            ]            
+            ]
         });
 
         var modifiedMonth = (parseInt(month) - 1);
         jQuery('#meetings-calendar').fullCalendar('gotoDate', new Date(year, modifiedMonth));
-        
+
         $('.show-meetings-modal').on('click', function () {
             $('#modal-month-meetings').modal('show');
         });
-        
+
         $('#save-month-meetings').on('click', function (e) {
             e.preventDefault();
-            
+
             $.ajax({
                 url: '<?php echo APP_ROOT_URL ?>/clients/ajax-update-month-meetings/',
                 data: $('#form-month-meetings').serialize(),
@@ -199,30 +199,30 @@ if (file_exists(APP_ROOT_PATH . '/js/view/' . $view . '.js')) {
                 },
                 dataType: 'json',
                 success: function(data) {
-                    var total_meetings_count = $('#total_meetings').val(); 
-                    
+                    var total_meetings_count = $('#total_meetings').val();
+
                     if (isNaN(total_meetings_count)) {
                         total_meetings_count = 0;
                     }
-                    
+
                     if (isNaN(data.total_meetings_av)) {
                         data.total_meetings_av = 0;
                     }
-                    
+
                     total_meetings_count = (parseInt(data.total_meetings_av) + parseInt(total_meetings_count));
 
                     $('#total_meetings_av').val(parseInt(data.total_meetings_av));
                     $('#total_meetings_total').val(total_meetings_count);
-                    
+
                     $('#modal-month-meetings').modal('hide');
                     console.log('Monthly meeting numbers changed, please click submit button to save it.');
 					return false;
                     toastr["success"]("Monthly meeting numbers changed, please click submit button to save it.", "Success")
                 },
                 type: 'POST'
-             });            
+             });
         });
-    });   
+    });
 </script>
 </body>
 

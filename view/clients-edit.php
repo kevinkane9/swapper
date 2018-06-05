@@ -36,7 +36,10 @@
                                     <tbody>
                                     <tr>
                                         <td colspan="2" class="text-right">
-                                            <em for=""><?php echo ucfirst($history['status']);?></em> since: <?php echo date('jS M Y',strtotime( $history['updated_at'] ));?>
+                                            <em for=""><?php echo ucfirst(($history['status']) ? $history['status'] : 'Active');?></em> Since:
+                                            <?php
+                                                echo date('jS M Y',strtotime( ($history['updated_at']) ? $history['updated_at'] : $clientFormData['created_at'] ));
+                                            ?>
                                         </td>
                                     </tr>
                                     <tr>

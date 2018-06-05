@@ -1,4 +1,9 @@
 $(function() {
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
+
     $('a.status-toggle').click(function (e) {
         e.preventDefault();
         $this = $(this);
@@ -7,10 +12,7 @@ $(function() {
             $this.removeClass('fa-active-client').addClass('fa-paused-client');
             faStatus = 'paused';
         } else if ($this.hasClass('fa-paused-client')) {
-            $this.removeClass('fa-paused-client').addClass('fa-archived-client');
-            faStatus = 'archived';
-        } else if ($this.hasClass('fa-archived-client')) {
-            $this.removeClass('fa-archived-client').addClass('fa-active-client');
+            $this.removeClass('fa-paused-client').addClass('fa-active-client');
             faStatus = 'active';
         }
 
@@ -25,7 +27,7 @@ $(function() {
                 'client':$this.attr('data-client')
             },
             success: function(html){
-                location.reload();
+                toastr[html.status](html.data.message, capitalizeFirstLetter(html.status))
              }
           });
     });

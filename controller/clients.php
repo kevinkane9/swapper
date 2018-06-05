@@ -47,9 +47,11 @@ if ('POST' == $_SERVER['REQUEST_METHOD']) {
                         )
                     );
                 }
+            } catch (Exception $e) {
+                jsonError(['message' => 'An error occurred, please try again later.']);
+            }
 
-                Route::setFlash('success', 'Client successfully saved');
-            } catch (Exception $e) {}
+            jsonSuccess(['message'=>'Client status successfully saved.']);
         exit;
         break;
         case 'create':
